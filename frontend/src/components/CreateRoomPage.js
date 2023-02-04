@@ -39,7 +39,9 @@ export default class CreateRoomPage extends Component {
                 guest_can_pause: this.state.guest_can_pause
             })
         }
-        fetch('/api/create-room', requestOptions).then((response) => response.json()).then((data) => console.log(data))
+        fetch('/api/create-room', requestOptions).then((response) => response.json()).then((data) => {
+            this.props.history.push('/room/' + data.code)
+        })
     }
 
     render() {
