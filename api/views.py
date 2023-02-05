@@ -105,12 +105,26 @@ class CreateRoomView(APIView):
                 )
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
+
 class UserInRoomView(APIView):
     def get(self, request, format=None):
         if not self.request.session.exists(self.request.session.session_key):
             self.request.session.create()
-            
-        data = {
-            'code': self.request.session.get(SESSION_KEY_ROOM_KEY)
-        }
+
+        data = {"code": self.request.session.get(SESSION_KEY_ROOM_KEY)}
         return JsonResponse(data, status=status.HTTP_200_OK)
+
+
+class LeaveRoomView(APIView):
+    def post(self, request, format=None):
+        if SESSION_KEY_ROOM_KEY in self.request.session:
+            # remove code from user session
+            code = self.request.session.pop(SESSION_KEY_ROOM_KEY)
+            host_id = self.request.session.session_key
+            room_results = Room.objects.filter(host=host_id)
+            if len(room_results) > 0:
+                room = room_results[0]
+                print(f"delete room code {code}")
+                room.delete()
+            print(f"leave room code {code}")
+        return Response({"message": "success"}, status=status.HTTP_200_OK)
