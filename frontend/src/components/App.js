@@ -11,9 +11,9 @@ export default class App extends Component {
     }
 
     render() {
-        return <div><HomePage/>
+        return <div class="center"><HomePage />
         </div>
-            
+
     }
 }
 
